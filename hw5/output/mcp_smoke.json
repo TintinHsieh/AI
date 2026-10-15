@@ -1,0 +1,485 @@
+{
+  "schema_version": "hw5.problem5.operational_mcp_smoke.v1",
+  "status": "passed",
+  "config_path": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW5\\.mcp.json",
+  "database_path": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW5\\data\\campus_customs_working.db",
+  "tickets_tested": [
+    101,
+    102,
+    103
+  ],
+  "checks": [
+    {
+      "tool_name": "<discovery>",
+      "arguments": {},
+      "returned_result": {
+        "tool_names": [
+          "check_inventory",
+          "get_cash_balance",
+          "inspect_financial_obligation",
+          "inspect_ticket",
+          "prepare_payment_request"
+        ]
+      },
+      "independent_check": {
+        "method": "expected_expanded_tool_set",
+        "expected": [
+          "check_inventory",
+          "get_cash_balance",
+          "inspect_financial_obligation",
+          "inspect_ticket",
+          "prepare_payment_request"
+        ],
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "inspect_ticket",
+      "arguments": {
+        "ticket_id": 101
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "ticket": {
+          "id": 101,
+          "type": "customer_order",
+          "requester": "Tauhid Zaman",
+          "subject": "Bulldog tee",
+          "sku": "CC-TEE-WHITE",
+          "size": "S",
+          "qty": 1,
+          "lease_id": null,
+          "invoice_id": 501,
+          "status": "open",
+          "notes": "Needs a tee in size S.",
+          "created_at": "2026-08-31T09:15:00-04:00"
+        },
+        "related": {
+          "inventory": [
+            {
+              "sku": "CC-TEE-WHITE",
+              "name": "Classic Bulldog Tee",
+              "size": "L",
+              "qty": 3,
+              "location": "Aisle B"
+            },
+            {
+              "sku": "CC-TEE-WHITE",
+              "name": "Classic Bulldog Tee",
+              "size": "M",
+              "qty": 5,
+              "location": "Aisle B"
+            },
+            {
+              "sku": "CC-TEE-WHITE",
+              "name": "Classic Bulldog Tee",
+              "size": "S",
+              "qty": 0,
+              "location": "Aisle B"
+            },
+            {
+              "sku": "CC-TEE-WHITE",
+              "name": "Classic Bulldog Tee",
+              "size": "XL",
+              "qty": 2,
+              "location": "Aisle B"
+            }
+          ],
+          "pricing": {
+            "sku": "CC-TEE-WHITE",
+            "unit_cost": 8.0,
+            "list_price": 28.0
+          },
+          "invoice": {
+            "id": 501,
+            "vendor_id": 1,
+            "amount": 840.0,
+            "due_date": "2026-08-28",
+            "status": "open",
+            "description": "Rush reprint CC-TEE-WHITE S",
+            "vendor_name": "Bulldog Print Co",
+            "vendor_specialty": "apparel reprint",
+            "lead_days": 5
+          },
+          "cash_accounts": [
+            {
+              "name": "checking",
+              "balance": 3400.0,
+              "date": "2026-08-31"
+            }
+          ],
+          "payments": [],
+          "payment_requests": []
+        }
+      },
+      "independent_check": {
+        "method": "ticket_row_and_status_query",
+        "expected": {
+          "ticket_id": 101,
+          "status": "open"
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "inspect_ticket",
+      "arguments": {
+        "ticket_id": 102
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "ticket": {
+          "id": 102,
+          "type": "rent_notice",
+          "requester": "Elm City Properties",
+          "subject": "Rent due",
+          "sku": null,
+          "size": null,
+          "qty": null,
+          "lease_id": 1,
+          "invoice_id": null,
+          "status": "open",
+          "notes": "Email: shop rent due in 2 days.",
+          "created_at": "2026-08-31T11:05:00-04:00"
+        },
+        "related": {
+          "lease": {
+            "id": 1,
+            "space_name": "Chapel Street shop",
+            "landlord": "Elm City Properties",
+            "monthly_rent": 2400.0,
+            "next_due": "2026-09-02",
+            "notes": null
+          },
+          "cash_accounts": [
+            {
+              "name": "checking",
+              "balance": 3400.0,
+              "date": "2026-08-31"
+            }
+          ],
+          "payments": [],
+          "payment_requests": []
+        }
+      },
+      "independent_check": {
+        "method": "ticket_row_and_status_query",
+        "expected": {
+          "ticket_id": 102,
+          "status": "open"
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "inspect_ticket",
+      "arguments": {
+        "ticket_id": 103
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "ticket": {
+          "id": 103,
+          "type": "price_override",
+          "requester": "Yale AI Club",
+          "subject": "Bulk hoodie discount",
+          "sku": "CC-HOOD-NAVY",
+          "size": "M",
+          "qty": 20,
+          "lease_id": null,
+          "invoice_id": null,
+          "status": "open",
+          "notes": "Student org wants 20 hoodies, size M, asking for a bulk discount.",
+          "created_at": "2026-08-31T16:55:00-04:00"
+        },
+        "related": {
+          "inventory": [
+            {
+              "sku": "CC-HOOD-NAVY",
+              "name": "Basic Hoodie Big Yale",
+              "size": "L",
+              "qty": 14,
+              "location": "Aisle A"
+            },
+            {
+              "sku": "CC-HOOD-NAVY",
+              "name": "Basic Hoodie Big Yale",
+              "size": "M",
+              "qty": 8,
+              "location": "Aisle A"
+            },
+            {
+              "sku": "CC-HOOD-NAVY",
+              "name": "Basic Hoodie Big Yale",
+              "size": "S",
+              "qty": 4,
+              "location": "Aisle A"
+            },
+            {
+              "sku": "CC-HOOD-NAVY",
+              "name": "Basic Hoodie Big Yale",
+              "size": "XL",
+              "qty": 6,
+              "location": "Aisle A"
+            }
+          ],
+          "pricing": {
+            "sku": "CC-HOOD-NAVY",
+            "unit_cost": 22.0,
+            "list_price": 58.0
+          },
+          "cash_accounts": [
+            {
+              "name": "checking",
+              "balance": 3400.0,
+              "date": "2026-08-31"
+            }
+          ],
+          "payments": [],
+          "payment_requests": []
+        }
+      },
+      "independent_check": {
+        "method": "ticket_row_and_status_query",
+        "expected": {
+          "ticket_id": 103,
+          "status": "open"
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "check_inventory",
+      "arguments": {
+        "sku": "CC-TEE-WHITE",
+        "size": "S"
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "sku": "CC-TEE-WHITE",
+        "size": "S",
+        "inventory": [
+          {
+            "sku": "CC-TEE-WHITE",
+            "name": "Classic Bulldog Tee",
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          }
+        ],
+        "pricing": {
+          "sku": "CC-TEE-WHITE",
+          "unit_cost": 8.0,
+          "list_price": 28.0
+        }
+      },
+      "independent_check": {
+        "method": "inventory_and_pricing_query",
+        "expected": {
+          "inventory": {
+            "sku": "CC-TEE-WHITE",
+            "name": "Classic Bulldog Tee",
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          },
+          "pricing": {
+            "sku": "CC-TEE-WHITE",
+            "unit_cost": 8.0,
+            "list_price": 28.0
+          }
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "inspect_financial_obligation",
+      "arguments": {
+        "ticket_id": 101
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "ticket_id": 101,
+        "obligation": {
+          "id": 501,
+          "vendor_id": 1,
+          "amount": 840.0,
+          "due_date": "2026-08-28",
+          "status": "open",
+          "description": "Rush reprint CC-TEE-WHITE S",
+          "vendor_name": "Bulldog Print Co",
+          "specialty": "apparel reprint",
+          "lead_days": 5
+        },
+        "cash_accounts": [
+          {
+            "name": "checking",
+            "balance": 3400.0,
+            "date": "2026-08-31"
+          }
+        ],
+        "existing_payments": [],
+        "payment_requests": []
+      },
+      "independent_check": {
+        "method": "obligation_and_cash_query",
+        "expected": {
+          "cash_accounts": [
+            {
+              "name": "checking",
+              "balance": 3400.0,
+              "date": "2026-08-31"
+            }
+          ],
+          "obligation_type": "invoice"
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "inspect_financial_obligation",
+      "arguments": {
+        "ticket_id": 102
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "ticket_id": 102,
+        "obligation": {
+          "id": 1,
+          "space_name": "Chapel Street shop",
+          "landlord": "Elm City Properties",
+          "monthly_rent": 2400.0,
+          "next_due": "2026-09-02",
+          "notes": null
+        },
+        "cash_accounts": [
+          {
+            "name": "checking",
+            "balance": 3400.0,
+            "date": "2026-08-31"
+          }
+        ],
+        "existing_payments": [],
+        "payment_requests": []
+      },
+      "independent_check": {
+        "method": "obligation_and_cash_query",
+        "expected": {
+          "cash_accounts": [
+            {
+              "name": "checking",
+              "balance": 3400.0,
+              "date": "2026-08-31"
+            }
+          ],
+          "obligation_type": "lease"
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "get_cash_balance",
+      "arguments": {
+        "account": "checking"
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "account": "checking",
+        "accounts": [
+          {
+            "name": "checking",
+            "balance": 3400.0,
+            "date": "2026-08-31"
+          }
+        ]
+      },
+      "independent_check": {
+        "method": "cash_account_query",
+        "expected": [
+          {
+            "name": "checking",
+            "balance": 3400.0,
+            "date": "2026-08-31"
+          }
+        ],
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "prepare_payment_request",
+      "arguments": {
+        "ticket_id": 101,
+        "requested_by": "Boss",
+        "reason": "Prepare invoice review for human approval; do not execute."
+      },
+      "returned_result": {
+        "ok": true,
+        "error": null,
+        "request": {
+          "id": 1,
+          "ticket_id": 101,
+          "kind": "invoice",
+          "ref_id": 501,
+          "amount": 840.0,
+          "account": "checking",
+          "reason": "Prepare invoice review for human approval; do not execute.",
+          "status": "pending",
+          "requested_by": "Boss",
+          "created_at": "2026-10-15 03:16:41",
+          "approved_by": null,
+          "approved_at": null,
+          "executed_payment_id": null
+        }
+      },
+      "independent_check": {
+        "method": "payment_request_and_no_payment_query",
+        "expected": {
+          "status": "pending",
+          "payment_count": 0
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "inspect_ticket",
+      "arguments": {
+        "ticket_id": 999
+      },
+      "returned_result": {
+        "ok": false,
+        "error": {
+          "code": "ticket_not_found",
+          "message": "No ticket has that id."
+        },
+        "ticket": null,
+        "related": {}
+      },
+      "independent_check": {
+        "method": "missing_ticket_query",
+        "expected": {
+          "error": "ticket_not_found"
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    }
+  ],
+  "all_results_match_independent_checks": true,
+  "note": "Payment preparation was tested as pending only; no payment was executed by MCP."
+}

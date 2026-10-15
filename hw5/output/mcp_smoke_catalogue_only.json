@@ -1,0 +1,327 @@
+{
+  "schema_version": "hw5.problem4.mcp_smoke.v1",
+  "status": "passed",
+  "config_path": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW5\\.mcp.json",
+  "server_config": {
+    "command": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW4\\.venv\\Scripts\\python.exe",
+    "args": [
+      "mcp_server.py"
+    ],
+    "cwd": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW5",
+    "env": {
+      "PYTHONUNBUFFERED": "1"
+    }
+  },
+  "database_path": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW5\\data\\campus_customs_working.db",
+  "ticket_source": {
+    "available": false,
+    "note": "No ticket records or assignment ticket payloads were present in the supplied workspace. Inputs are representative real database workflows and are not labeled as ticket-derived."
+  },
+  "checks": [
+    {
+      "test": "tool_discovery",
+      "tool_name": null,
+      "arguments": {},
+      "returned_result": {
+        "tool_names": [
+          "check_inventory",
+          "get_customer_chat_history",
+          "search_catalogue"
+        ]
+      },
+      "independent_check": {
+        "method": "expected_protocol_tool_set",
+        "expected_tool_names": [
+          "check_inventory",
+          "get_customer_chat_history",
+          "search_catalogue"
+        ],
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "search_catalogue",
+      "arguments": {
+        "query": "hoodie",
+        "limit": 4,
+        "in_stock_only": true
+      },
+      "returned_result": {
+        "ok": true,
+        "query": "hoodie",
+        "in_stock_only": true,
+        "products": [
+          {
+            "product_id": "basic-hoodie-big-yale",
+            "name": "Basic Hoodie Big Yale",
+            "garment_type": "pullover hoodie",
+            "price": 68.0,
+            "colors": [
+              "navy blue",
+              "white"
+            ],
+            "total_stock": 60
+          },
+          {
+            "product_id": "brooks-brothers-double-knit-full-zip-hoodie-yale",
+            "name": "Brooks Brothers Double Knit Full Zip Hoodie Yale",
+            "garment_type": "full-zip hooded sweatshirt",
+            "price": 88.0,
+            "colors": [
+              "navy",
+              "white"
+            ],
+            "total_stock": 55
+          },
+          {
+            "product_id": "champion-full-zip-hood",
+            "name": "Champion Full Zip Hood",
+            "garment_type": "full-zip hooded sweatshirt",
+            "price": 88.0,
+            "colors": [
+              "charcoal gray",
+              "white",
+              "navy blue"
+            ],
+            "total_stock": 40
+          },
+          {
+            "product_id": "champion-reverse-weave-hoodie-1",
+            "name": "Champion Reverse Weave Hoodie 1",
+            "garment_type": "hoodie",
+            "price": 68.0,
+            "colors": [
+              "navy",
+              "white"
+            ],
+            "total_stock": 80
+          }
+        ],
+        "error": null
+      },
+      "independent_check": {
+        "method": "independent_read_only_sqlite_query",
+        "expected_products": [
+          {
+            "product_id": "basic-hoodie-big-yale",
+            "name": "Basic Hoodie Big Yale",
+            "price": 68.0,
+            "total_stock": 60
+          },
+          {
+            "product_id": "brooks-brothers-double-knit-full-zip-hoodie-yale",
+            "name": "Brooks Brothers Double Knit Full Zip Hoodie Yale",
+            "price": 88.0,
+            "total_stock": 55
+          },
+          {
+            "product_id": "champion-full-zip-hood",
+            "name": "Champion Full Zip Hood",
+            "price": 88.0,
+            "total_stock": 40
+          },
+          {
+            "product_id": "champion-reverse-weave-hoodie-1",
+            "name": "Champion Reverse Weave Hoodie 1",
+            "price": 68.0,
+            "total_stock": 80
+          }
+        ],
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "check_inventory",
+      "arguments": {
+        "product_id": "basic-hoodie-big-yale"
+      },
+      "returned_result": {
+        "ok": true,
+        "product_id": "basic-hoodie-big-yale",
+        "name": "Basic Hoodie Big Yale",
+        "garment_type": "pullover hoodie",
+        "price": 68.0,
+        "colors": [
+          "navy blue",
+          "white"
+        ],
+        "total_stock": 60,
+        "inventory": [
+          {
+            "size": "XS",
+            "quantity": 15
+          },
+          {
+            "size": "S",
+            "quantity": 5
+          },
+          {
+            "size": "M",
+            "quantity": 5
+          },
+          {
+            "size": "L",
+            "quantity": 8
+          },
+          {
+            "size": "XL",
+            "quantity": 2
+          },
+          {
+            "size": "XXL",
+            "quantity": 25
+          }
+        ],
+        "error": null
+      },
+      "independent_check": {
+        "method": "independent_read_only_sqlite_query",
+        "expected_product": {
+          "product_id": "basic-hoodie-big-yale",
+          "name": "Basic Hoodie Big Yale",
+          "price": 68.0,
+          "total_stock": 60,
+          "inventory": [
+            {
+              "size": "XS",
+              "quantity": 15
+            },
+            {
+              "size": "S",
+              "quantity": 5
+            },
+            {
+              "size": "M",
+              "quantity": 5
+            },
+            {
+              "size": "L",
+              "quantity": 8
+            },
+            {
+              "size": "XL",
+              "quantity": 2
+            },
+            {
+              "size": "XXL",
+              "quantity": 25
+            }
+          ]
+        },
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "get_customer_chat_history",
+      "arguments": {
+        "user_id": 1,
+        "limit": 2
+      },
+      "returned_result": {
+        "ok": true,
+        "user_id": 1,
+        "messages": [
+          {
+            "message_id": 23,
+            "role": "user",
+            "content": "what hoodies do you have?",
+            "created_at": "2026-10-07 02:30:38",
+            "product_ids": [],
+            "product_count": 0,
+            "product_payload_valid": true
+          },
+          {
+            "message_id": 24,
+            "role": "assistant",
+            "content": "We have several Yale hoodies, mostly priced at $68:\n\n- Basic Hoodie Big Yale \u2014 $68, navy pullover with large YALE lettering\n- Brooks Brothers Double Knit Full Zip Hoodie Yale \u2014 $88, navy full-zip\n- Champion Full Zip Hood \u2014 $88, charcoal gray full-zip\n- Champion Reverse Weave Hoodie 1 \u2014 $68, navy pullover with arched YALE graphic\n- Crew Left Chest Hoodie \u2014 $68, navy with YALE CREW lettering\n- District Vit Hoodie Vintage Bulldog \u2014 $68, dark heather gray with vintage bulldog graphic\n- District Vit Hoodie Vintage Sailor Bulldog \u2014 $68, charcoal gray with sailor bulldog graphic\n- Fencing Left Chest Hoodie \u2014 $68, navy with YALE FENCING lettering",
+            "created_at": "2026-10-07 02:30:38",
+            "product_ids": [
+              "basic-hoodie-big-yale",
+              "brooks-brothers-double-knit-full-zip-hoodie-yale",
+              "champion-full-zip-hood",
+              "champion-reverse-weave-hoodie-1",
+              "crew-left-chest-hoodie",
+              "district-vit-hoodie-vintage-bulldog",
+              "district-vit-hoodie-vintage-sailor-bulldog",
+              "fencing-left-chest-hoodie"
+            ],
+            "product_count": 8,
+            "product_payload_valid": true
+          }
+        ],
+        "error": null
+      },
+      "independent_check": {
+        "method": "independent_read_only_sqlite_query",
+        "expected_messages": [
+          {
+            "message_id": 23,
+            "role": "user",
+            "content": "what hoodies do you have?",
+            "created_at": "2026-10-07 02:30:38"
+          },
+          {
+            "message_id": 24,
+            "role": "assistant",
+            "content": "We have several Yale hoodies, mostly priced at $68:\n\n- Basic Hoodie Big Yale \u2014 $68, navy pullover with large YALE lettering\n- Brooks Brothers Double Knit Full Zip Hoodie Yale \u2014 $88, navy full-zip\n- Champion Full Zip Hood \u2014 $88, charcoal gray full-zip\n- Champion Reverse Weave Hoodie 1 \u2014 $68, navy pullover with arched YALE graphic\n- Crew Left Chest Hoodie \u2014 $68, navy with YALE CREW lettering\n- District Vit Hoodie Vintage Bulldog \u2014 $68, dark heather gray with vintage bulldog graphic\n- District Vit Hoodie Vintage Sailor Bulldog \u2014 $68, charcoal gray with sailor bulldog graphic\n- Fencing Left Chest Hoodie \u2014 $68, navy with YALE FENCING lettering",
+            "created_at": "2026-10-07 02:30:38"
+          }
+        ],
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "check_inventory",
+      "arguments": {
+        "product_id": "not-a-real-product"
+      },
+      "returned_result": {
+        "ok": false,
+        "product_id": "not-a-real-product",
+        "name": null,
+        "garment_type": null,
+        "price": null,
+        "colors": [],
+        "total_stock": null,
+        "inventory": [],
+        "error": {
+          "code": "product_not_found",
+          "message": "No catalogue product has that product_id."
+        }
+      },
+      "independent_check": {
+        "method": "independent_read_only_sqlite_query",
+        "expected_product": null,
+        "matches": true
+      },
+      "matches_independent_check": true
+    },
+    {
+      "tool_name": "search_catalogue",
+      "arguments": {
+        "query": " "
+      },
+      "returned_result": {
+        "ok": false,
+        "query": "",
+        "in_stock_only": false,
+        "products": [],
+        "error": {
+          "code": "invalid_query",
+          "message": "query must contain at least one character."
+        }
+      },
+      "independent_check": {
+        "method": "independent_input_validation_check",
+        "expected_error": "invalid_query",
+        "matches": true
+      },
+      "matches_independent_check": true
+    }
+  ],
+  "all_results_match_independent_checks": true
+}

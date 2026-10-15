@@ -1,0 +1,258 @@
+{
+  "schema_version": "hw5.problem11.backend_smoke.v1",
+  "status": "passed",
+  "uses_temporary_database": true,
+  "model_calls_made": false,
+  "checks": [
+    {
+      "check": "health",
+      "status_code": 200,
+      "returned": {
+        "ok": true,
+        "database": "campus_customs_working.db",
+        "tables": [
+          "audit_events",
+          "cash_accounts",
+          "desk",
+          "inventory",
+          "invoices",
+          "leases",
+          "payment_requests",
+          "payments",
+          "pricing",
+          "sqlite_sequence",
+          "tickets",
+          "vendors"
+        ],
+        "mcp": ".mcp.json"
+      },
+      "expected_status_code": 200,
+      "passed": true
+    },
+    {
+      "check": "list_tickets",
+      "status_code": 200,
+      "returned": [
+        {
+          "id": 101,
+          "type": "customer_order",
+          "requester": "Tauhid Zaman",
+          "subject": "Bulldog tee",
+          "sku": "CC-TEE-WHITE",
+          "size": "S",
+          "qty": 1,
+          "lease_id": null,
+          "invoice_id": 501,
+          "status": "open",
+          "notes": "Needs a tee in size S.",
+          "created_at": "2026-08-31T09:15:00-04:00"
+        },
+        {
+          "id": 102,
+          "type": "rent_notice",
+          "requester": "Elm City Properties",
+          "subject": "Rent due",
+          "sku": null,
+          "size": null,
+          "qty": null,
+          "lease_id": 1,
+          "invoice_id": null,
+          "status": "open",
+          "notes": "Email: shop rent due in 2 days.",
+          "created_at": "2026-08-31T11:05:00-04:00"
+        },
+        {
+          "id": 103,
+          "type": "price_override",
+          "requester": "Yale AI Club",
+          "subject": "Bulk hoodie discount",
+          "sku": "CC-HOOD-NAVY",
+          "size": "M",
+          "qty": 20,
+          "lease_id": null,
+          "invoice_id": null,
+          "status": "open",
+          "notes": "Student org wants 20 hoodies, size M, asking for a bulk discount.",
+          "created_at": "2026-08-31T16:55:00-04:00"
+        }
+      ],
+      "expected_status_code": 200,
+      "passed": true
+    },
+    {
+      "check": "ticket_detail",
+      "status_code": 200,
+      "returned": {
+        "ticket": {
+          "id": 101,
+          "type": "customer_order",
+          "requester": "Tauhid Zaman",
+          "subject": "Bulldog tee",
+          "sku": "CC-TEE-WHITE",
+          "size": "S",
+          "qty": 1,
+          "lease_id": null,
+          "invoice_id": 501,
+          "status": "open",
+          "notes": "Needs a tee in size S.",
+          "created_at": "2026-08-31T09:15:00-04:00"
+        },
+        "payment_requests": [],
+        "events": []
+      },
+      "expected_status_code": 200,
+      "passed": true
+    },
+    {
+      "check": "invalid_ticket_detail",
+      "status_code": 404,
+      "returned": {
+        "detail": {
+          "code": "ticket_not_found",
+          "message": "No ticket has that id."
+        }
+      },
+      "expected_status_code": 404,
+      "passed": true
+    },
+    {
+      "check": "invalid_ticket_run_guard",
+      "status_code": 404,
+      "returned": {
+        "detail": {
+          "code": "ticket_not_found",
+          "message": "No ticket has that id."
+        }
+      },
+      "expected_status_code": 404,
+      "passed": true
+    },
+    {
+      "check": "initial_cash",
+      "status_code": 200,
+      "returned": {
+        "accounts": [
+          {
+            "name": "checking",
+            "balance": 3400.0,
+            "date": "2026-08-31"
+          }
+        ],
+        "checking": {
+          "name": "checking",
+          "balance": 3400.0,
+          "date": "2026-08-31"
+        }
+      },
+      "expected_status_code": 200,
+      "passed": true
+    },
+    {
+      "check": "pending_request_listing",
+      "status_code": 200,
+      "returned": [
+        {
+          "id": 1,
+          "ticket_id": 102,
+          "kind": "lease",
+          "ref_id": 1,
+          "amount": 2400.0,
+          "account": "checking",
+          "reason": "Test lease approval",
+          "status": "pending",
+          "requested_by": "Smoke Test",
+          "created_at": "2026-10-15 03:35:50",
+          "approved_by": null,
+          "approved_at": null,
+          "executed_payment_id": null
+        }
+      ],
+      "expected_status_code": 200,
+      "passed": true
+    },
+    {
+      "check": "approval_success",
+      "status_code": 200,
+      "returned": {
+        "payment_request": {
+          "id": 1,
+          "ticket_id": 102,
+          "kind": "lease",
+          "ref_id": 1,
+          "amount": 2400.0,
+          "account": "checking",
+          "reason": "Test lease approval",
+          "status": "approved",
+          "requested_by": "Smoke Test",
+          "created_at": "2026-10-15 03:35:50",
+          "approved_by": "Smoke Tester",
+          "approved_at": "2026-10-15T03:35:50.999912+00:00",
+          "executed_payment_id": 1
+        },
+        "payment_id": 1,
+        "cash_account": {
+          "name": "checking",
+          "balance": 1000.0,
+          "date": "2026-08-31"
+        }
+      },
+      "expected_status_code": 200,
+      "passed": true
+    },
+    {
+      "check": "duplicate_approval",
+      "status_code": 409,
+      "returned": {
+        "detail": {
+          "code": "payment_not_pending",
+          "message": "Only pending payment requests can be approved."
+        }
+      },
+      "expected_status_code": 409,
+      "passed": true
+    },
+    {
+      "check": "insufficient_funds",
+      "status_code": 409,
+      "returned": {
+        "detail": {
+          "code": "insufficient_funds",
+          "message": "Approving this payment would make checking negative."
+        }
+      },
+      "expected_status_code": 409,
+      "passed": true
+    },
+    {
+      "check": "reset_working_database",
+      "status_code": 200,
+      "returned": {
+        "ok": true,
+        "message": "Working database restored from the protected original.",
+        "checking_balance": 3400.0,
+        "ticket_statuses": {
+          "101": "open",
+          "102": "open",
+          "103": "open"
+        }
+      },
+      "expected_status_code": 200,
+      "passed": true
+    },
+    {
+      "check": "post_reset_financial_state",
+      "returned": {
+        "payments": 0,
+        "payment_requests": 0
+      },
+      "expected": {
+        "payments": 0,
+        "payment_requests": 0
+      },
+      "passed": true
+    }
+  ],
+  "original_sha256_before": "23686a90d698f7fa6f901a3f0a9774db9cbb31e13151c9e5717275f3321f360a",
+  "original_sha256_after": "23686a90d698f7fa6f901a3f0a9774db9cbb31e13151c9e5717275f3321f360a",
+  "original_unchanged": true
+}

@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "campus-customs": {
+      "command": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW4\\.venv\\Scripts\\python.exe",
+      "args": [
+        "mcp_operational_server.py"
+      ],
+      "cwd": "C:\\Users\\User\\Desktop\\Yale SOM\\Coursework\\AI Foundation\\HW5",
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}
+
