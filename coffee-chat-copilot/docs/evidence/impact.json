@@ -4,23 +4,23 @@
   "repo_url": "https://github.com/TintinHsieh/AI/tree/main/coffee-chat-copilot",
   "app_url": "",
   "baseline": {
-    "manual_minutes_per_reply": null,
-    "manual_minutes_source": "Timed myself replying to 3 real banker emails the usual way (Outlook template + calendar + MTA TrainTime + Google Maps).",
-    "app_minutes_per_reply": null,
-    "app_minutes_source": "Timed the same 3 emails with Coffee Chat Copilot (paste -> review -> copy).",
-    "manual_scheduling_errors": null,
-    "manual_scheduling_errors_source": "Times in the last month I offered a slot that clashed with a class / train / another chat."
+    "manual_minutes_per_reply": "10-15",
+    "manual_minutes_source": "My own stopwatch test on real banker emails from this season: the usual way (Outlook template + calendar + MTA TrainTime + Google Maps) vs. the app (paste, review, copy).",
+    "app_minutes_per_reply": "5-10",
+    "app_minutes_source": "Same emails with Coffee Chat Copilot, including reading and editing the draft.",
+    "manual_scheduling_errors": 3,
+    "manual_scheduling_errors_source": "My recollection of this season: times I offered that clashed with a class, a train, or another chat."
   },
   "season": {
-    "banker_emails_per_season": null,
-    "source": "Count of coffee chat emails in my Outlook sent folder this recruiting season."
+    "banker_emails_per_season": "60-80",
+    "source": "Rough count of coffee chat emails in my Outlook Sent folder this recruiting season."
   },
   "tester": {
-    "name": "",
-    "role": "SOM MBA '28, recruiting for IB",
+    "name": "J.",
+    "role": "SOM MBA student recruiting for IB",
     "quote": "",
-    "minutes_manual": null,
-    "minutes_app": null,
-    "date": ""
+    "minutes_manual": "15-20",
+    "minutes_app": "12",
+    "date": "October 2026"
   }
 }
