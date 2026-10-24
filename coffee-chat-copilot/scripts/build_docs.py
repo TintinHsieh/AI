@@ -17,6 +17,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+if hasattr(sys.stdout, "reconfigure"):  # Windows consoles: never crash on ✔/✅
+    sys.stdout.reconfigure(errors="replace")
 DOCS = ROOT / "docs"
 EV = DOCS / "evidence"
 SHOTS = DOCS / "screenshots"

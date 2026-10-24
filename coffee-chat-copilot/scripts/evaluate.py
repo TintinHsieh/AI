@@ -22,6 +22,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+if hasattr(sys.stdout, "reconfigure"):  # Windows consoles: never crash on ✔/✅
+    sys.stdout.reconfigure(errors="replace")
 
 
 def main():
@@ -45,11 +47,21 @@ def main():
     label = a.label or f"{cp.llm.mode}_{a.effort}{'_nocache' if a.no_cache else ''}"
     expected = json.loads((ROOT / "data/sample_emails/expected.json").read_text(encoding="utf-8"))
     rows = []
+    total = (len(expected) + 2) * a.repeat
+    print(f"Running {total} real pipeline runs ({cp.llm.mode}, effort={a.effort}, cache={'off' if a.no_cache else 'on'}). This takes a few minutes...", flush=True)
+    done = 0
+
+    def tick(name):
+        nonlocal done
+        done += 1
+        r = rows[-1]
+        print(f"  [{done}/{total}] {name}: {r['llm_calls']} calls, {r['input'] + r['output']} tokens, {r['seconds']}s", flush=True)
     for rep in range(a.repeat):
         # an outreach first so the confirmation email has holds to match
         th = cp.compose_outreach("Daniel Park", "Evercore", "Evercore Corporate Presentation", None, "virtual")
         st = th["steps"][-1]
         rows.append(row("outreach", st, {}, None, rep))
+        tick("outreach")
         for name, exp in expected.items():
             text = (ROOT / f"data/sample_emails/{name}.txt").read_text(encoding="utf-8")
             if name == "06_evercore_confirm":  # confirm the first window we actually offered
@@ -58,8 +70,10 @@ def main():
             t0 = time.time()
             th2 = cp.process_email(text)
             rows.append(row(name, th2["steps"][-1], exp, time.time() - t0, rep))
+            tick(name)
         th3 = cp.thank_you(th["id"], "his move from consulting into restructuring; advice to know the 3-statement model cold")
         rows.append(row("thank_you", th3["steps"][-1], {}, None, rep))
+        tick("thank_you")
     summary = summarize(rows, cp.llm.mode, a)
     out = ROOT / "docs" / "evidence"
     out.mkdir(parents=True, exist_ok=True)
