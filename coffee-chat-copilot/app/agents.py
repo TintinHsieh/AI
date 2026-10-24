@@ -287,7 +287,13 @@ class Copilot:
                 when = parse_dt(ex["confirmed_time"])
             except (ValueError, TypeError):
                 trace.append({"agent": "Validator", "step": "bad time", "detail": f"could not read {ex['confirmed_time']!r}; offering times instead"})
-                rtype = "time_conflict"
+                rtype = "new_outreach"
+        if when is not None:
+            ok, why = safety.time_grounded(step.get("email", ""), when, now().date())
+            if not ok:  # never confirm a time the banker didn't actually write
+                trace.append({"agent": "Validator", "step": "pick not confirmed", "detail": f"AI read the pick as {when.isoformat()} but {why}; offering validated times instead"})
+                step["ungrounded_pick"] = {"ai_read": iso(when), "reason": why}
+                when, rtype = None, "new_outreach"
         if when is not None:
             hold = cal.match_hold(holds, thread["id"], when) or next(
                 (h for h in holds if h["status"] == "held" and abs((parse_dt(h["start"]) - when).total_seconds()) <= 1800), None)

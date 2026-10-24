@@ -51,6 +51,41 @@ DATE_RE = re.compile(r"\b(January|February|March|April|May|June|July|August|Sept
 SECRET_RE = re.compile(r"\b(sk-[A-Za-z0-9_-]{8,}|PORTKEY_API_KEY|OPENAI_API_KEY)\b|<banker_email>|developer message|system prompt", re.I)
 
 
+MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
+WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+
+
+def time_grounded(email: str, when, today) -> tuple[bool, str]:
+    """Is the time the AI extracted actually written in the banker's email?
+
+    Stops the model from 'repairing' an impossible date (11/31 -> 12/1) or inventing a time,
+    and then confirming something the banker never said.
+    """
+    from datetime import date, timedelta
+    low = email.lower()
+    for m in NUMDATE_RE.finditer(email):
+        try:
+            date(today.year, int(m.group(1)), int(m.group(2)))
+        except ValueError:
+            return False, f"email contains an impossible date ({m.group(0)})"
+    d = when.date()
+    date_ok = (
+        any((int(m.group(1)), int(m.group(2))) == (d.month, d.day) for m in NUMDATE_RE.finditer(email))
+        or re.search(rf"\b{MONTHS[d.month - 1][:3]}[a-z]*\.?\s+{d.day}(st|nd|rd|th)?\b", low) is not None
+        or ((d - today).days <= 8 and re.search(rf"\b{WEEKDAYS[d.weekday()][:3]}[a-z]*\b", low) is not None)
+        or (d == today + timedelta(days=1) and "tomorrow" in low)
+        or (d == today and "today" in low)
+    )
+    if not date_ok:
+        return False, f"{d.strftime('%a %m/%d')} is not written in the email"
+    hm = (when.hour, when.minute)
+    time_ok = any(((int(m.group(1)) % 12) + (12 if m.group(3).lower() == "p" else 0), int(m.group(2) or 0)) == hm
+                  for m in TIME_RE.finditer(email)) or (hm == (12, 0) and "noon" in low)
+    if not time_ok:
+        return False, f"{when.strftime('%I:%M %p').lstrip('0')} is not written in the email"
+    return True, "date and time both appear in the email"
+
+
 def _norm_clock(h: str, m: str | None, ap: str) -> str:
     return f"{int(h)}:{m or '00'} {ap.upper()}M"
 

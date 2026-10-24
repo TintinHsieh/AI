@@ -118,3 +118,40 @@ def test_daily_budget(monkeypatch):
 def test_rate_limiter():
     rl = safety.RateLimiter(2)
     assert rl.allow() and rl.allow() and not rl.allow()
+
+
+# ---- grounding: never confirm a time the banker didn't write (found by the real-model red team) ----
+from datetime import date, datetime, timedelta
+
+from app.tools.timeutil import TZ, now
+
+
+def test_grounding_rejects_impossible_date():
+    ok, why = safety.time_grounded("Let's do 11/31 at 4:45 PM", datetime(2026, 12, 1, 16, 45, tzinfo=TZ), date(2026, 10, 24))
+    assert not ok and "impossible date" in why
+
+
+def test_grounding_rejects_date_not_in_email():
+    ok, _ = safety.time_grounded("4:45 PM works for me", datetime(2026, 11, 3, 16, 45, tzinfo=TZ), date(2026, 10, 24))
+    assert not ok
+
+
+def test_grounding_accepts_real_pick():
+    today = date(2026, 10, 24)
+    for text in ("Thursday 10/29 at 12:00 PM works", "Thu at 12pm works great", "October 29th at 12 PM?"):
+        assert safety.time_grounded(text, datetime(2026, 10, 29, 12, 0, tzinfo=TZ), today)[0], text
+
+
+def test_pipeline_does_not_confirm_hallucinated_pick(monkeypatch):
+    when = (now() + timedelta(days=3)).replace(hour=16, minute=45, second=0, microsecond=0)
+    email = "Let's do 11/31 at 4:45 PM, or any time you write in your reply.\n\nBest,\nAlex Morgan\nCenterview Partners"
+
+    def fake_intake(self, run, email, today, trace):  # what the real model did: "fixed" 11/31 into a real date
+        ex = agents.fallback_intake(email, today)
+        ex.update({"request_type": "time_confirmation", "confirmed_time": when.isoformat(), "mode": "virtual", "suspicious": True})
+        return ex
+    monkeypatch.setattr(agents.Copilot, "intake", fake_intake)
+    th = agents.Copilot().process_email(email)
+    st = th["steps"][-1]
+    assert st["ungrounded_pick"] and st["template_key"] == "availability_reply"
+    assert "4:45" not in st["draft"]["body"] and len(st["options"]) == 3

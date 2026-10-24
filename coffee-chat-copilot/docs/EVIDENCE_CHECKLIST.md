@@ -12,7 +12,7 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env      # then open .env and paste your PORTKEY_API_KEY
-python -m pytest -q         # 26 passed
+python -m pytest -q         # 30 passed
 python run.py               # opens http://127.0.0.1:8000 — the badge should say "Live: gpt-6-luna via portkey"
 ```
 In **Settings**: put in your real name, signature, phone, email, Zoom details, and **your real class schedule**.

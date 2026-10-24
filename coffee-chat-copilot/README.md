@@ -61,6 +61,7 @@ anything.** See `docs/` for the full report.
 
 - Prompt-injection scanner, plus the banker's email is wrapped as untrusted data.
 - Agents only see free/busy, never class names; tools are read-only; holds are written by code.
+- **Grounding check**: a banker's picked time is only confirmed if that date and time are actually written in the email (no "repairing" 11/31 into 12/1).
 - **Draft checker** blocks any time or date that wasn't validated, class names, other banks, and secrets → retry → template fallback.
 - Loop guard (6 scheduler steps, duplicate-call detection), max 10 model calls / 60k tokens per email,
   400k tokens per day, 8 runs per minute (all configurable in `.env`).
@@ -69,7 +70,7 @@ anything.** See `docs/` for the full report.
 ## Tests and evidence
 
 ```bash
-python -m pytest -q                       # 26 tests, demo mode, no key needed
+python -m pytest -q                       # 30 tests, demo mode, no key needed
 python scripts/evaluate.py                # real token counts, cost, latency, quality checks -> docs/evidence/
 python scripts/evaluate.py --effort medium   # does spending more help?
 python scripts/evaluate.py --no-cache        # what does prompt caching save?
