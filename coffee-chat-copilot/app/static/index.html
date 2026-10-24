@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coffee Chat Copilot</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="icon" href="data:,">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true"><path d="M6 12h17v7a7 7 0 0 1-7 7h-3a7 7 0 0 1-7-7z" fill="#fff"/><path d="M23 14h2a3 3 0 0 1 0 6h-2" stroke="#fff" stroke-width="2" fill="none"/><path d="M11 4c0 2 2 2 2 4M16 4c0 2 2 2 2 4" stroke="#c9a56b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div><b>Coffee Chat</b><span>Copilot</span></div>
+    </div>
+    <nav>
+      <button data-tab="inbox" class="active">Inbox <span id="nav-pending" class="pill hidden"></span></button>
+      <button data-tab="calendar">Calendar &amp; Holds</button>
+      <button data-tab="nyc">NYC Day Planner</button>
+      <button data-tab="wellbeing">Wellbeing</button>
+      <button data-tab="usage">Usage &amp; Cost</button>
+      <button data-tab="settings">Settings</button>
+    </nav>
+    <div class="side-foot">
+      <div id="mode-badge" class="badge">…</div>
+      <div class="meter"><div id="budget-bar"></div></div>
+      <small id="budget-text"></small>
+    </div>
+  </aside>
+
+  <main>
+    <!-- INBOX -->
+    <section id="tab-inbox" class="tab active">
+      <header class="page-head">
+        <div><h1>Inbox</h1><p>Paste a banker's email. Get a club-format reply with three validated times in under a minute.</p></div>
+      </header>
+      <div class="inbox-grid">
+        <div class="col">
+          <div class="card">
+            <div class="seg" id="compose-seg">
+              <button data-c="email" class="sel">Banker emailed</button>
+              <button data-c="outreach">Reach out</button>
+              <button data-c="event">Event thanks</button>
+            </div>
+            <div id="c-email">
+              <textarea id="email-in" rows="9" placeholder="Paste the banker's email here…"></textarea>
+              <div class="row between">
+                <label class="small">Received <input type="datetime-local" id="received-at"></label>
+                <button id="btn-draft" class="primary">Draft reply</button>
+              </div>
+              <div class="samples"><span class="muted small">Try a sample:</span> <span id="sample-list"></span></div>
+            </div>
+            <div id="c-outreach" class="hidden">
+              <div class="grid2">
+                <label>Banker name<input id="o-name" placeholder="Priya Raman"></label>
+                <label>Bank<select id="o-bank"></select></label>
+                <label>Where you met<input id="o-event" placeholder="Goldman Sachs Corporate Presentation"></label>
+                <label>Who shared their contact? (optional)<input id="o-ref" placeholder="Henry Liu"></label>
+                <label>Format<select id="o-mode"><option value="either">In-person or virtual</option><option value="virtual">Virtual only</option><option value="in_person">In person (NYC)</option></select></label>
+                <label>Banker email (optional)<input id="o-email" placeholder="priya@gs.com"></label>
+              </div>
+              <div class="row between" style="margin-top:10px"><span class="small muted">Uses your club's outreach template, with intro or without</span><button id="btn-outreach" class="primary">Draft outreach</button></div>
+            </div>
+            <div id="c-event" class="hidden">
+              <div class="grid2">
+                <label>Speaker name<input id="e-name" placeholder="Alex Chen"></label>
+                <label>Bank<select id="e-bank"></select></label>
+                <label>Event<input id="e-event" placeholder="kickoff event"></label>
+                <label>When<input id="e-when" value="yesterday"></label>
+              </div>
+              <textarea id="e-notes" rows="3" placeholder="What stood out? e.g. the PlayAGS deal and its 40% premium; the strength of the Yale alumni network"></textarea>
+              <div class="row between"><span class="small muted">Uses your club's thank-you (info session) template</span><button id="btn-event" class="primary">Draft thank-you</button></div>
+            </div>
+            <div id="progress" class="progress hidden"></div>
+          </div>
+          <div class="card">
+            <div class="row between"><h3>Threads</h3><button id="btn-reset" class="ghost small">Reset demo data</button></div>
+            <div id="thread-list" class="thread-list"><p class="muted">No banker emails yet.</p></div>
+          </div>
+        </div>
+        <div class="col" id="thread-detail">
+          <div class="card empty-state">
+            <h3>How it works</h3>
+            <ol class="how">
+              <li><b>Reach out</b> after an event. The app offers three 90-minute windows that fit your classes and the train, and holds them.</li>
+              <li><b>Intake agent</b> reads the email: who, which bank, in person or virtual, their availability.</li>
+              <li><b>Scheduler agent</b> searches your calendar, Metro-North trains, and NYC travel times for three 90-minute windows.</li>
+              <li><b>Validator</b> re-checks every option against your classes and other holds. The AI cannot invent a time.</li>
+              <li><b>Responder agent</b> writes the reply in your finance club format. A checker blocks leaks and wrong times.</li>
+              <li>The three times are <b>held</b> so no other banker gets them, until one is confirmed.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section id="tab-calendar" class="tab">
+      <header class="page-head">
+        <div><h1>Calendar &amp; Holds</h1><p>Classes, tentative holds offered to bankers, confirmed chats, and NYC travel time.</p></div>
+        <div class="row">
+          <button id="cal-prev" class="ghost">&larr;</button>
+          <span id="cal-range" class="muted"></span>
+          <button id="cal-next" class="ghost">&rarr;</button>
+        </div>
+      </header>
+      <div class="legend">
+        <span><i class="sw class"></i>Class / commitment</span>
+        <span><i class="sw held"></i>Hold (offered, not confirmed)</span>
+        <span><i class="sw confirmed"></i>Confirmed chat</span>
+        <span><i class="sw travel"></i>NYC trip (train + travel)</span>
+      </div>
+      <div id="week" class="week"></div>
+      <div class="two">
+        <div class="card">
+          <h3>Holds &amp; confirmed chats</h3>
+          <div id="holds-list"></div>
+        </div>
+        <div class="card">
+          <h3>Quick find (no AI, zero tokens)</h3>
+          <div class="row wrap">
+            <select id="qf-mode"><option value="virtual">Virtual / phone</option><option value="in_person">In person (NYC)</option></select>
+            <select id="qf-bank"></select>
+            <button id="qf-go" class="primary">Find 90-min windows</button>
+          </div>
+          <div id="qf-out" class="slot-list"></div>
+          <details class="add-manual"><summary>Add a chat you set up outside the app</summary>
+            <div class="row wrap">
+              <input id="mc-banker" placeholder="Banker name">
+              <select id="mc-bank"></select>
+              <select id="mc-mode"><option value="virtual">Virtual</option><option value="in_person">In person</option></select>
+              <input id="mc-start" type="datetime-local">
+              <button id="mc-go">Add</button>
+            </div>
+            <div id="mc-out" class="small"></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- NYC -->
+    <section id="tab-nyc" class="tab">
+      <header class="page-head">
+        <div><h1>NYC Day Planner</h1><p>Trains, walking/subway legs between banks, buffers, meals, and when you get home.</p></div>
+        <label class="small row"><input type="checkbox" id="nyc-held" checked> include unconfirmed holds</label>
+      </header>
+      <div class="row wrap" id="nyc-days"></div>
+      <div class="two">
+        <div class="card"><div id="nyc-plan"><p class="muted">No NYC days yet. Process an in-person banker email first.</p></div></div>
+        <div class="card"><h3>Heads-up</h3><div id="nyc-flags"></div><h3 style="margin-top:18px">Food &amp; treats</h3><div id="nyc-meals"></div></div>
+      </div>
+    </section>
+
+    <!-- WELLBEING -->
+    <section id="tab-wellbeing" class="tab">
+      <header class="page-head">
+        <div><h1>Wellbeing</h1><p>Recruiting is a marathon. Small habits keep you sharp for every chat.</p></div>
+      </header>
+      <div class="two">
+        <div class="card coach">
+          <div class="row between"><h3 id="coach-head">Your coach</h3>
+            <div class="row"><button id="coach-rules" class="ghost small">Refresh (free)</button><button id="coach-ai" class="primary small">Ask coach (AI)</button></div></div>
+          <div id="coach-nudges"></div>
+          <small id="coach-src" class="muted"></small>
+        </div>
+        <div class="card">
+          <h3>Daily check-in</h3>
+          <div class="mood" id="mood"></div>
+          <div class="row wrap">
+            <label>Slept <input id="ci-sleep" type="number" min="0" max="14" step="0.5" value="7" style="width:70px"> h</label>
+            <label><input id="ci-ate" type="checkbox" checked> Ate real meals</label>
+            <label><input id="ci-friend" type="checkbox"> Talked to a friend</label>
+          </div>
+          <input id="ci-note" placeholder="Anything on your mind? (optional, stays on your computer)">
+          <button id="ci-save" class="primary">Save check-in</button>
+          <div id="ci-history" class="ci-history"></div>
+        </div>
+      </div>
+      <div class="card"><h3>This week at a glance</h3><div id="wb-facts" class="tiles"></div></div>
+    </section>
+
+    <!-- USAGE -->
+    <section id="tab-usage" class="tab">
+      <header class="page-head">
+        <div><h1>Usage &amp; Cost</h1><p>Measured from real model calls (input, cached input, output tokens) and priced at gpt-6-luna rates.</p></div>
+        <button id="usage-refresh" class="ghost">Refresh</button>
+      </header>
+      <div id="usage-tiles" class="tiles"></div>
+      <div class="two">
+        <div class="card"><h3>Cost by agent (all calls)</h3><div id="usage-chart"></div></div>
+        <div class="card"><h3>Tokens by agent</h3><div id="usage-agents"></div></div>
+      </div>
+      <div class="card"><h3>Recent model calls</h3><div id="usage-calls" class="scroll"></div></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="tab-settings" class="tab">
+      <header class="page-head"><div><h1>Settings</h1><p>Your classes, travel preferences, and your finance club's reply format. Saved on your computer only.</p></div></header>
+      <div class="two">
+        <div class="card">
+          <h3>Profile &amp; schedule</h3>
+          <div class="grid2">
+            <label>Name<input id="p-name"></label>
+            <label>School<input id="p-school"></label>
+            <label>Signature title line<input id="p-title"></label>
+            <label>Phone<input id="p-phone"></label>
+            <label>Email<input id="p-email"></label>
+            <label>Earliest chat<input id="p-earliest" type="time"></label>
+            <label>Latest chat end<input id="p-latest" type="time"></label>
+            <label>Hold length (min)<input id="p-block" type="number" step="15"></label>
+            <label>Campus &rarr; station (min)<input id="p-c2s" type="number"></label>
+            <label>Max chats / day<input id="p-maxday" type="number"></label>
+            <label>Max chats / week<input id="p-maxweek" type="number"></label>
+          </div>
+          <label style="display:block;margin-top:10px">Zoom / dial-in details (pasted into virtual invites)<textarea id="p-zoom" rows="4" class="mono"></textarea></label>
+          <h4>Chat days</h4><div id="p-days" class="row wrap"></div>
+          <h4>Classes &amp; recurring commitments</h4>
+          <div id="p-classes"></div>
+          <button id="p-addclass" class="ghost small">+ Add class</button>
+          <h4>Favorite treats / friends (for the coach)</h4>
+          <div class="grid2">
+            <label>Treats (comma separated)<input id="p-treats"></label>
+            <label>Friends (comma separated)<input id="p-friends"></label>
+          </div>
+          <button id="p-save" class="primary">Save profile</button> <span id="p-msg" class="small muted"></span>
+        </div>
+        <div class="card">
+          <h3>Finance club email templates</h3>
+          <p class="small muted">From your club's Outlook templates. Placeholders like {banker_first_name}, {options}, {confirmed_time}, {signature} are filled by the app. Lines starting with # are notes for the Responder agent and are never sent.</p>
+          <select id="t-key" style="width:100%;margin-bottom:8px"></select>
+          <textarea id="t-text" rows="22" class="mono"></textarea>
+          <button id="t-save" class="primary">Save format</button> <span id="t-msg" class="small muted"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

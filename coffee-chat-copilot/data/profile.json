@@ -1,0 +1,89 @@
+{
+  "name": "Your Name",
+  "school": "Yale School of Management",
+  "title_line": "MBA Candidate | Yale School of Management 'XX",
+  "sign_off": "Best,",
+  "email": "your.name@yale.edu",
+  "phone": "+1 (XXX) XXX-XXXX",
+  "timezone": "America/New_York",
+  "home_station": "New Haven Union Station",
+  "campus_to_station_min": 20,
+  "station_to_campus_min": 20,
+  "arrive_early_min": 15,
+  "chat_block_min": 90,
+  "virtual_buffer_min": 10,
+  "between_chats_buffer_min": 20,
+  "earliest_chat": "08:00",
+  "latest_chat_end": "20:00",
+  "chat_days": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri"
+  ],
+  "reply_sla_min": 15,
+  "hold_expiry_hours": 48,
+  "classes": [
+    {
+      "name": "MGT 409 AI Foundations for Managers",
+      "days": [
+        "Mon",
+        "Wed"
+      ],
+      "start": "13:00",
+      "end": "14:20"
+    },
+    {
+      "name": "Core: Accounting",
+      "days": [
+        "Mon",
+        "Wed"
+      ],
+      "start": "08:30",
+      "end": "09:50"
+    },
+    {
+      "name": "Core: Competitor",
+      "days": [
+        "Tue",
+        "Thu"
+      ],
+      "start": "10:10",
+      "end": "11:30"
+    },
+    {
+      "name": "Core: Sourcing & Managing Funds",
+      "days": [
+        "Tue",
+        "Thu"
+      ],
+      "start": "14:40",
+      "end": "16:00"
+    },
+    {
+      "name": "Finance Club Weekly",
+      "days": [
+        "Thu"
+      ],
+      "start": "18:30",
+      "end": "19:30"
+    }
+  ],
+  "commitments": [],
+  "wellbeing": {
+    "max_chats_per_day": 3,
+    "max_chats_per_week": 6,
+    "favorite_treats": [
+      "matcha latte",
+      "a cookie from the bakery near Grand Central"
+    ],
+    "friends": [
+      "your roommate",
+      "your best friend from home"
+    ],
+    "sleep_goal_hours": 7
+  },
+  "zoom_details": "Zoom Link: https://yale.zoom.us/j/XXXXXXXXXX\nOr Telephone: 203-432-9666 (2-ZOOM if on-campus) or 646 568 7788\nMeeting ID: XXX XXX XXXX",
+  "follow_up_after_days": 3
+}

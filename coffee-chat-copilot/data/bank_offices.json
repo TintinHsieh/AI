@@ -1,0 +1,23 @@
+{
+  "_note": "NYC headquarters / main banking offices. Coordinates are approximate (for travel-time estimates only). Verify the exact address in your calendar invite.",
+  "Grand Central Terminal": {"address": "89 E 42nd St", "lat": 40.7527, "lon": -73.9772, "aliases": ["gct", "grand central"]},
+  "Goldman Sachs": {"address": "200 West St", "lat": 40.7149, "lon": -74.0146, "aliases": ["goldman", "gs", "goldman sachs"]},
+  "J.P. Morgan": {"address": "270 Park Ave", "lat": 40.7557, "lon": -73.9752, "aliases": ["jpmorgan", "jp morgan", "jpm", "j.p. morgan", "chase"]},
+  "Morgan Stanley": {"address": "1585 Broadway", "lat": 40.7604, "lon": -73.9853, "aliases": ["morgan stanley", "ms"]},
+  "Bank of America": {"address": "One Bryant Park", "lat": 40.7556, "lon": -73.9846, "aliases": ["bofa", "bank of america", "baml", "boa"]},
+  "Citi": {"address": "388 Greenwich St", "lat": 40.7202, "lon": -74.0110, "aliases": ["citi", "citigroup", "citibank"]},
+  "Evercore": {"address": "55 E 52nd St", "lat": 40.7588, "lon": -73.9737, "aliases": ["evercore", "evr"]},
+  "Lazard": {"address": "30 Rockefeller Plaza", "lat": 40.7593, "lon": -73.9794, "aliases": ["lazard"]},
+  "Centerview Partners": {"address": "31 W 52nd St", "lat": 40.7606, "lon": -73.9782, "aliases": ["centerview", "cvp"]},
+  "PJT Partners": {"address": "280 Park Ave", "lat": 40.7560, "lon": -73.9741, "aliases": ["pjt", "pjt partners"]},
+  "Moelis & Company": {"address": "399 Park Ave", "lat": 40.7591, "lon": -73.9719, "aliases": ["moelis", "moelis & company", "moelis and company"]},
+  "Perella Weinberg": {"address": "767 Fifth Ave", "lat": 40.7638, "lon": -73.9729, "aliases": ["perella", "pwp", "perella weinberg"]},
+  "Guggenheim Securities": {"address": "330 Madison Ave", "lat": 40.7531, "lon": -73.9790, "aliases": ["guggenheim"]},
+  "Houlihan Lokey": {"address": "245 Park Ave", "lat": 40.7544, "lon": -73.9757, "aliases": ["houlihan", "houlihan lokey", "hl"]},
+  "Jefferies": {"address": "520 Madison Ave", "lat": 40.7608, "lon": -73.9746, "aliases": ["jefferies"]},
+  "Barclays": {"address": "745 Seventh Ave", "lat": 40.7605, "lon": -73.9835, "aliases": ["barclays"]},
+  "UBS": {"address": "1285 Avenue of the Americas", "lat": 40.7615, "lon": -73.9808, "aliases": ["ubs"]},
+  "Deutsche Bank": {"address": "1 Columbus Circle", "lat": 40.7684, "lon": -73.9827, "aliases": ["deutsche", "deutsche bank", "db"]},
+  "Wells Fargo": {"address": "500 W 33rd St", "lat": 40.7536, "lon": -74.0006, "aliases": ["wells", "wells fargo"]},
+  "RBC Capital Markets": {"address": "200 Vesey St", "lat": 40.7139, "lon": -74.0153, "aliases": ["rbc", "rbc capital markets"]}
+}
