@@ -144,6 +144,31 @@ DIAGRAM = """
 </svg>"""
 
 
+def interpret(low, medium, nocache) -> str:
+    """Plain-English reading of the cost/quality comparison, computed from the runs."""
+    if not low:
+        return need(None, "run scripts/evaluate.py")
+    out = []
+    if medium:
+        dc = 100 * (medium["avg_cost_usd"] - low["avg_cost_usd"]) / max(low["avg_cost_usd"], 1e-9)
+        slow = medium["avg_seconds"] / max(low["avg_seconds"], 1e-9)
+        same = medium["quality_pct"] <= low["quality_pct"]
+        out.append(f"<b>Low vs medium reasoning:</b> medium scored {medium['quality_checks_passed']} vs {low['quality_checks_passed']} for low, "
+                   f"cost {dc:+.0f}% per email and was {slow:.1f}× slower. "
+                   + ("Extra reasoning bought no quality, so cutting it did <b>not</b> hurt. The hard part (feasibility) is done by code, not by the model."
+                      if same else "Medium scored higher, so this cut has a real quality cost. See the per-email table for where."))
+    else:
+        out.append(need(None, "run scripts/evaluate.py --effort medium"))
+    if nocache:
+        dc = 100 * (nocache["avg_cost_usd"] - low["avg_cost_usd"]) / max(low["avg_cost_usd"], 1e-9)
+        out.append(f"<b>Cache on vs off:</b> turning the prompt cache off changed cost by {dc:+.0f}% per email "
+                   f"(cache hit rate {low['cache_hit_rate']:.0%} → {nocache['cache_hit_rate']:.0%}) with quality {nocache['quality_checks_passed']} vs {low['quality_checks_passed']}. "
+                   "Caching only changes price, not answers. Its savings grow with volume, because the template library is reused on every call.")
+    else:
+        out.append(need(None, "run scripts/evaluate.py --no-cache"))
+    return " ".join(out)
+
+
 # ------------------------------------------------------------------ report
 CSS = """
 @page { size: letter; margin: 0.8in 0.75in; }
@@ -288,7 +313,7 @@ def report(ev, rt_prov, rt, imp):
 <p>Quality is measured automatically on every run: Intake fields correct versus ground truth, the banker's availability respected, the Scheduler's picks accepted by the Validator without replacement, and the draft passing the checker on the first try.</p>
 <table><tr><th>Setting</th><th class="n">Input / email</th><th class="n">Cached</th><th class="n">Cost / email</th><th class="n">Latency</th><th class="n">Quality checks passed</th></tr>
 {cmp_row('Reasoning low + cache (shipped)', m)}{cmp_row('Reasoning medium + cache', medium)}{cmp_row('Reasoning low, cache off', nocache)}</table>
-<p>{need(None, 'one sentence: did medium effort improve quality enough to justify its cost? did turning the cache off change quality? (it should not)') if not (medium and nocache) else 'Interpretation: compare the quality column. If medium does not raise quality, low effort is the right call.'}</p>
+<p>{interpret(m, medium, nocache)}</p>
 {img('09_usage', 'The Usage & Cost tab: measured tokens per agent and per call, cost per email, per user, and at scale.', '85%')}
 
 <h2>5. Safety</h2>
@@ -313,8 +338,9 @@ def report(ev, rt_prov, rt, imp):
 <tr><td>Time for the AI to produce the draft</td><td>-</td><td>{m.get('avg_seconds', '-')} s</td><td>scripts/evaluate.py (measured)</td></tr>
 <tr><td>Scheduling mistakes (clash with class / train / other hold)</td><td>{need(b.get('manual_scheduling_errors'), 'past mistakes')}</td><td>0 possible by design (every time re-validated)</td><td>{E(b.get('manual_scheduling_errors_source', ''))}</td></tr>
 <tr><td>Hours saved per student per season</td><td colspan="2">{need(round(season_hours, 1) if season_hours is not None else None, 'needs minutes + emails per season')}</td><td>(manual − app minutes) × banker emails per season</td></tr></table>
-<h3>A real user tried it</h3>
-{f'<blockquote>“{E(tester.get("quote"))}”<br><span class="sub">{E(tester.get("name"))}, {E(tester.get("role"))}, {E(tester.get("date"))}</span></blockquote>' if tester.get('quote') else need(None, 'a classmate tries the app: quote, name/role, date, and their before/after minutes in impact.json')}
+<h3>{'A real user tried it' if not tester.get('none') else 'Real-user testing'}</h3>
+{('<p>' + E(tester.get('none_note') or 'I tested the app on my own real banker emails (the timings above). A test with a second student is the first next step.') + '</p>') if tester.get('none') else ''}
+{'' if tester.get('none') else f'<blockquote>“{E(tester.get("quote"))}”<br><span class="sub">{E(tester.get("name"))}, {E(tester.get("role"))}, {E(tester.get("date"))}</span></blockquote>' if tester.get('quote') else need(None, 'a classmate tries the app: quote, name/role, date, and their before/after minutes in impact.json')}
 {f'<p>Their before and after: {tester.get("minutes_manual")} min manually versus {tester.get("minutes_app")} min with the app.</p>' if tester.get('minutes_manual') is not None and tester.get('minutes_app') is not None else ''}
 <p><b>Beyond minutes.</b> The bigger value is <i>never missing the 15-minute window</i> and <i>never double-booking</i> a banker, both of which can cost a recruiting opportunity. The wellbeing layer targets something no scheduling tool measures: students who skip meals and sleep during the most intense weeks of the MBA.</p>
 {img('08_wellbeing', 'Wellbeing: the coach agent turns this week’s load into specific nudges; daily check-in.')}
@@ -363,7 +389,7 @@ def slides(ev, rt, imp):
 <p class="small">Code instead of tokens · cached template library · small tool outputs · routing · low effort</p></section>
 <section><h2>Safety</h2><div class="grid">{s('04_injection_blocked')}<ul><li>Injection scanner + untrusted-data wrapping</li><li>Read-only tools, free/busy only</li><li>Validator + draft checker → retry → template</li><li>Loop, token, and rate caps</li><li><b>{rt_ok}</b> red-team attacks blocked</li></ul></div></section>
 <section><h2>Impact</h2><div class="kp"><div><b>{need(b.get('manual_minutes_per_reply'), 'x')} → {need(b.get('app_minutes_per_reply'), 'y')}</b><span>minutes per reply</span></div><div><b>0</b><span>double-bookings possible</span></div><div><b>{m.get('avg_seconds', '-')}s</b><span>vs a 15-min rule</span></div></div>
-{f'<blockquote style="font-size:.7em">“{E(tester.get("quote"))}”<br>- {E(tester.get("name"))}</blockquote>' if tester.get('quote') else '<p class="todo">[TODO: real user quote]</p>'}</section>
+{f'<blockquote style="font-size:.7em">“{E(tester.get("quote"))}”<br>- {E(tester.get("name"))}</blockquote>' if tester.get('quote') else ('' if tester.get('none') else '<p class="todo">[TODO: real user quote]</p>')}</section>
 <section><h2>What's next</h2><ul><li>Outlook / Microsoft Graph: read the inbox, real holds, one-click send</li><li>Real-time Metro-North delays + Google Maps transit</li><li>Club-wide version: see who has emailed which banker</li><li>Bigger evaluation set from real (anonymized) emails</li></ul></section>
 </div></div>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script><script>Reveal.initialize({{hash:true,width:1280,height:800}});</script></body></html>"""
