@@ -1,0 +1,26 @@
+{
+  "_how_to_fill": "Replace every null / empty string with REAL data. The report highlights anything missing in yellow. See docs/EVIDENCE_CHECKLIST.md.",
+  "student_name": "Tintin Hsieh",
+  "repo_url": "https://github.com/TintinHsieh/AI/tree/main/coffee-chat-copilot",
+  "app_url": "",
+  "baseline": {
+    "manual_minutes_per_reply": null,
+    "manual_minutes_source": "Timed myself replying to 3 real banker emails the usual way (Outlook template + calendar + MTA TrainTime + Google Maps).",
+    "app_minutes_per_reply": null,
+    "app_minutes_source": "Timed the same 3 emails with Coffee Chat Copilot (paste -> review -> copy).",
+    "manual_scheduling_errors": null,
+    "manual_scheduling_errors_source": "Times in the last month I offered a slot that clashed with a class / train / another chat."
+  },
+  "season": {
+    "banker_emails_per_season": null,
+    "source": "Count of coffee chat emails in my Outlook sent folder this recruiting season."
+  },
+  "tester": {
+    "name": "",
+    "role": "SOM MBA '28, recruiting for IB",
+    "quote": "",
+    "minutes_manual": null,
+    "minutes_app": null,
+    "date": ""
+  }
+}

@@ -36,7 +36,8 @@ async def main():
         pg.on("dialog", lambda d: asyncio.ensure_future(d.accept()))
         await pg.goto(URL)
         await pg.wait_for_timeout(1000)
-        shot = lambda name, full=True: pg.screenshot(path=str(OUT / f"{name}.png"), full_page=full)
+        shot = lambda name, full=False: pg.screenshot(path=str(OUT / f"{name}.png"), full_page=full)
+        el = lambda sel, name: pg.locator(sel).first.screenshot(path=str(OUT / f"{name}.png"))
 
         # 1. outreach after a corporate presentation
         await pg.click("#compose-seg button[data-c=outreach]")
@@ -46,7 +47,7 @@ async def main():
         await pg.fill("#o-ref", "Henry Liu")
         await act(pg, "#btn-outreach", "/api/outreach")
         await pg.click(".convo details summary >> nth=0")
-        await shot("01_outreach")
+        await el(".convo .msg", "01_outreach")
         await pg.click("[data-sent]")
         await pg.wait_for_timeout(800)
 
@@ -60,7 +61,7 @@ async def main():
         await act(pg, "#nx-reply-go", "/api/inbox")
         await pg.click(".convo details summary >> nth=0")
         await pg.wait_for_timeout(400)
-        await shot("02_invite_with_trace")
+        await el(".convo .msg", "02_invite_with_trace")
         await pg.click("[data-sent]")
         await pg.wait_for_timeout(800)
 
@@ -69,18 +70,17 @@ async def main():
         await pg.click("#sample-list button:has-text('Evercore Virtual')")
         await act(pg, "#btn-draft", "/api/inbox")
         await pg.click(".convo details summary >> nth=0")
-        await shot("03_banker_first_with_trace")
+        await el(".convo .msg", "03_banker_first_with_trace")
 
         # 4. prompt injection
         await pg.click("#sample-list button:has-text('Injection Attack')")
         await act(pg, "#btn-draft", "/api/inbox")
-        await pg.click(".convo details summary >> nth=0")
-        await shot("04_injection_blocked")
+        await el(".convo .msg", "04_injection_blocked")
 
         # 5. introduction
         await pg.click("#sample-list button:has-text('Intro')")
         await act(pg, "#btn-draft", "/api/inbox")
-        await shot("05_intro")
+        await el(".convo .msg", "05_intro")
 
         # 6. second in-person bank so the NYC day has two stops
         await pg.click("#sample-list button:has-text('Lazard In Person')")
@@ -92,15 +92,23 @@ async def main():
             if tab == "calendar":
                 await pg.click("#cal-next")
                 await pg.wait_for_timeout(800)
-            await shot(name)
+            if tab == "calendar":
+                await el("#week", name)
+            elif tab == "nyc":
+                await el("#tab-nyc .two", name)
+            else:
+                await shot(name)
         await pg.click("button[data-tab=wellbeing]")
         await pg.wait_for_timeout(600)
         await pg.click("#coach-ai")
         await pg.wait_for_timeout(8000)
-        await shot("08_wellbeing")
+        await el("#tab-wellbeing .two", "08_wellbeing")
         await pg.click("button[data-tab=settings]")
         await pg.wait_for_timeout(800)
         await shot("10_settings")
+        await pg.click("button[data-tab=inbox]")
+        await pg.wait_for_timeout(600)
+        await shot("00_app_overview")
         await b.close()
     print(f"Saved screenshots to {OUT}")
 
